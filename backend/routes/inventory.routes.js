@@ -1,22 +1,22 @@
 const express = require('express');
 const router = express.Router();
 const { createInventory, getInventory, getInventoryItem, updateInventory, deleteInventory } = require('../controllers/inventory.controller');
-
+const {protect} = require('../middleware/auth.middleware');
 
 // get all inventory route
-router.get('/', getInventory)
+router.get('/', protect, getInventory)
 
 // create route
-router.post('/', createInventory)
+router.post('/', protect, createInventory)
 
 // get 1 inventory item route
-router.get('/:id', getInventoryItem)
+router.get('/:id', protect, getInventoryItem)
 
 // update inventory item route
-router.put('/:id', updateInventory)
+router.put('/:id', protect, updateInventory)
 
 // delete inventory item route
-router.delete('/:id', deleteInventory)
+router.delete('/:id', protect, deleteInventory)
 
 
 module.exports = router;
