@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const inventorySchema = new mongoose.Schema({
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
+    },
     name: {
         type: String,
         required: [true, 'please enter a name for the inventory item']
