@@ -23,7 +23,7 @@ const createInventory = asyncHandler(async (req, res) => {
 // @desc  Get Inventory Items
 // @route  GET /api/inventory
 const getInventory = asyncHandler(async (req, res) => {
-    const inventory = await Inventory.find({ user: req.user.id })
+    const inventory = await Inventory.find()//{ user: req.user.id })
 
     res.status(200).json(inventory)
 })
@@ -46,19 +46,19 @@ const updateInventory = asyncHandler(async (req, res) => {
         throw new Error('Inventory not found')
     }
 
-    const user = await User.findById(req.user.id)
+    // const user = await User.findById(req.user.id)
 
-    // Check for user
-    if(!user) {
-        res.status(401)
-        throw new Error('User not found')
-    }
+    // // Check for user
+    // if(!user) {
+    //     res.status(401)
+    //     throw new Error('User not found')
+    // }
 
-    // make sure the login user matches the inventory user
-    if(inventory.user.toString() !== user.id) {
-        res.status(401)
-        throw new Error('User not authorized')
-    }
+    // // make sure the login user matches the inventory user
+    // if(inventory.user.toString() !== user.id) {
+    //     res.status(401)
+    //     throw new Error('User not authorized')
+    // }
 
 
     const updateInventory = await Inventory.findByIdAndUpdate(req.params.id, req.body, {new: true})
@@ -75,19 +75,19 @@ const deleteInventory = asyncHandler(async (req, res) => {
         throw new Error('Inventory not found')
     }
 
-    const user = await User.findById(req.user.id)
+    // const user = await User.findById(req.user.id)
 
-    // Check for user
-    if(!user) {
-        res.status(401)
-        throw new Error('User not found')
-    }
+    // // Check for user
+    // if(!user) {
+    //     res.status(401)
+    //     throw new Error('User not found')
+    // }
 
-    // make sure the login user matches the inventory user
-    if(inventory.user.toString() !== user.id) {
-        res.status(401)
-        throw new Error('User not authorized')
-    }
+    // // make sure the login user matches the inventory user
+    // if(inventory.user.toString() !== user.id) {
+    //     res.status(401)
+    //     throw new Error('User not authorized')
+    // }
 
 
     const deletedInventory = await Inventory.findByIdAndRemove(req.params.id, req.body)

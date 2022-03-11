@@ -4,19 +4,19 @@ const { createInventory, getInventory, getInventoryItem, updateInventory, delete
 const {protect} = require('../middleware/auth.middleware');
 
 // get all inventory route
-router.get('/', protect, getInventory)
+router.get('/',  getInventory)
 
 // create route
-router.post('/', protect, createInventory)
+router.post('/',  createInventory)
 
 // get 1 inventory item route
-router.get('/:id', protect, getInventoryItem)
+router.get('/:id',  getInventoryItem)
 
 // update inventory item route
-router.put('/:id', protect, updateInventory)
+router.put('/:id',  updateInventory)
 
 // delete inventory item route
-router.delete('/:id', protect, deleteInventory)
+router.delete('/:id',  deleteInventory)
 
 
 module.exports = router;
