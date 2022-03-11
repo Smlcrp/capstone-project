@@ -8,7 +8,7 @@ const User = require('../models/user.model');
 const createInventory = asyncHandler(async (req, res) => {
     if(!req.body.name || !req.body.stock || !req.body.price) {
         res.status(400)
-        throw new Error('Please input text')
+        throw new Error('Please fill out all fields')
     }
 
     const inventory = await Inventory.create({
@@ -89,7 +89,7 @@ const deleteInventory = asyncHandler(async (req, res) => {
         throw new Error('User not authorized')
     }
 
-    
+
     const deletedInventory = await Inventory.findByIdAndRemove(req.params.id, req.body)
     res.status(200).json(`Deleted ${inventory}`)
 })

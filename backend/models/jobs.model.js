@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 
 const jobSchema = new mongoose.Schema({
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    },
-    parts: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Inventory'
-    },
+    // user: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'User'
+    // },
+    // parts: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Inventory'
+    // },
     customer: {
         type: String,
         required: [true, 'Please enter a customer name']
