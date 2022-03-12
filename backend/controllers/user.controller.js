@@ -8,12 +8,12 @@ const User = require('../models/user.model');
 const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password } = req.body
 
-    if(!name || !email || !password) {
+    if(!name || ! email || !password) {
         res.status(400)
-        throw new Error('Please enter all fields')
+        throw new Error('Please fill out all fields (name, email, password)')
     }
 
-    // check if user exists
+    // Check if User exists
     const userExists = await User.findOne({email})
 
     if(userExists) {
@@ -21,29 +21,28 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error('User already exists')
     }
 
-    // Hash password
+    // Hash Password
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, salt)
 
-    // Create user
+    // Create User
     const user = await User.create({
         name,
         email,
-        password: hashedPassword,
-        token: generateToken(user._id)
+        password: hashedPassword
     })
 
     if(user) {
         res.status(201).json({
             _id: user.id,
             name: user.name,
-            email: user.email
+            email: user.email,
+            token: generateToken(user._id),
         })
-    }else {
+    } else {
         res.status(400)
-        throw new Error('Invalid user data')
+        throw new Error('Invalid User Data')
     }
-    res.json({message: 'Register user'})
 })
 
 // @desc  Authenticate a user
@@ -51,7 +50,7 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
     const {email, password} = req.body
 
-    // Check for user email
+    //Check for User email
     const user = await User.findOne({email})
 
     if(user && (await bcrypt.compare(password, user.password))) {
@@ -59,33 +58,29 @@ const loginUser = asyncHandler(async (req, res) => {
             _id: user.id,
             name: user.name,
             email: user.email,
-            token: generateToken(user._id)
+            token: generateToken(user._id),
         })
     } else {
         res.status(400)
         throw new Error('Invalid credentials')
     }
-
-    res.json({message: 'Login user'})
 })
 
 // @desc  Get user data
 // @route  GET /api/users/me
 const getMe = asyncHandler(async (req, res) => {
-    const {_id, name, email} = await User.findById(req.user.id)
+    const { _id, name, email } = await User.findById(req.user.id)
 
-    res.status.json({
+    res.status(200).json({
         id: _id,
-        name: name,
+        name,
         email,
     })
-
-    res.json({message: 'User data display'})
 })
 
 // Generate JWT
 const generateToken = (id) => {
-    return jwt.sign({id}, process.env.JWT_SECRET, {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
         expiresIn: '30d',
     })
 }

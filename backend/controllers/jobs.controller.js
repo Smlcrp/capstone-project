@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const Jobs = require('../models/jobs.model');
+const User = require('../models/user.model');
 
 
 // @desc  Create job
@@ -7,7 +8,7 @@ const Jobs = require('../models/jobs.model');
 const createJobs = asyncHandler(async (req, res) => {
     if(!req.body.customer || !req.body.phone || !req.body.job_description || !req.body.parts) {
        res.status(400)
-       throw new Error('Please fill out all fields')
+       throw new Error('Please fill out all fields (customer, phone, job description, parts id, and user id)')
     }
 
     const job = await Jobs.create({
@@ -15,6 +16,7 @@ const createJobs = asyncHandler(async (req, res) => {
         phone: req.body.phone,
         job_description: req.body.job_description,
         parts: req.body.parts,
+        user: req.body.user,
     })
 
     res.status(200).json(job)
@@ -23,7 +25,7 @@ const createJobs = asyncHandler(async (req, res) => {
 // @desc  Get jobs
 // @route  GET /api/jobs
 const getJobs = asyncHandler(async (req, res) => {
-    const jobs = await Jobs.find()
+    const jobs = await Jobs.find({ user: req.user.id })
 
     res.status(200).json(jobs)
 })
@@ -46,6 +48,20 @@ const updateJobs = asyncHandler(async (req, res) => {
         throw new Error('Job not found')
     }
 
+    const user = await User.findById(req.user.id)
+
+    // Check for user
+    if(!user) {
+        res.status(401)
+        throw new Error('User not found')
+    }
+
+    // Make sure logged in user matches job user
+    if(job.user.toString() !== user.id) {
+        res.status(401)
+        throw new Error('User not authorized')
+    }
+
     const updatedJob = await Jobs.findByIdAndUpdate(req.params.id, req.body, {new: true}) 
 
     res.status(200).json(updatedJob)
@@ -61,9 +77,23 @@ const deleteJobs = asyncHandler(async (req, res) => {
         throw new Error('Job not found')
     }
 
-    const deletedJob = await Jobs.findByIdAndRemove(req.params.id, req.body)
+    const user = await User.findById(req.user.id)
 
-    res.status(200).json('Delete Successful')
+    // Check for user
+    if(!user) {
+        res.status(401)
+        throw new Error('User not found')
+    }
+
+    // Make sure logged in user matches job user
+    if(job.user.toString() !== user.id) {
+        res.status(401)
+        throw new Error('User not authorized')
+    }
+
+    await job.remove()
+
+    res.status(200).json({ id: req.params.id })
 })
 
 
