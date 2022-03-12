@@ -5,7 +5,7 @@ const Jobs = require('../models/jobs.model');
 // @desc  Create job
 // @route  POST /api/jobs
 const createJobs = asyncHandler(async (req, res) => {
-    if(!req.body.customer || !req.body.phone || !req.body.job_description) {
+    if(!req.body.customer || !req.body.phone || !req.body.job_description || !req.body.parts) {
        res.status(400)
        throw new Error('Please fill out all fields')
     }
@@ -14,6 +14,7 @@ const createJobs = asyncHandler(async (req, res) => {
         customer: req.body.customer,
         phone: req.body.phone,
         job_description: req.body.job_description,
+        parts: req.body.parts,
     })
 
     res.status(200).json(job)

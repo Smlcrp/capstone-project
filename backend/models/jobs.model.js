@@ -5,10 +5,10 @@ const jobSchema = new mongoose.Schema({
     //     type: mongoose.Schema.Types.ObjectId,
     //     ref: 'User'
     // },
-    // parts: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Inventory'
-    // },
+    parts: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Inventory'
+    },
     customer: {
         type: String,
         required: [true, 'Please enter a customer name']
