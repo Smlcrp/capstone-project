@@ -6,16 +6,16 @@ const User = require('../models/user.model');
 // @desc  Create Inventory Items
 // @route  POST /api/inventory
 const createInventory = asyncHandler(async (req, res) => {
-    if(!req.body.name || !req.body.stock || !req.body.price) {
-        res.status(400)
-        throw new Error('Please fill out all fields')
+    if(!req.body.name || !req.body.stock || !req.body.price ) {
+        res.status(400).json("Please fill out all required fields (name, stock, price, user.id")
+        
     }
-
+    
     const inventory = await Inventory.create({
         name: req.body.name,
         stock: req.body.stock,
         price: req.body.price,
-        user: req.user.id
+        user: req.body.id
     })
     res.status(200).json(inventory)
 })
@@ -23,7 +23,7 @@ const createInventory = asyncHandler(async (req, res) => {
 // @desc  Get Inventory Items
 // @route  GET /api/inventory
 const getInventory = asyncHandler(async (req, res) => {
-    const inventory = await Inventory.find({ user: req.user.id })
+    const inventory = await Inventory.find()
 
     res.status(200).json(inventory)
 })
@@ -42,22 +42,22 @@ const updateInventory = asyncHandler(async (req, res) => {
     const inventory = await Inventory.findById(req.params.id)
 
     if(!inventory) {
-        res.status(400)
-        throw new Error('Inventory not found')
+        res.status(400).json("Inventory not found")
+        
     }
 
     const user = await User.findById(req.user.id)
 
     // Check for user
     if(!user) {
-        res.status(401)
-        throw new Error('User not found')
+        res.status(401).json("User not found")
+    
     }
 
     // make sure the login user matches the inventory user
     if(inventory.user.toString() !== user.id) {
-        res.status(401)
-        throw new Error('User not authorized')
+        res.status(401).json("User Not Authorized")
+    
     }
 
 
@@ -71,27 +71,27 @@ const deleteInventory = asyncHandler(async (req, res) => {
     const inventory = await Inventory.findById(req.params.id)
 
     if(!inventory) {
-        res.status(400)
-        throw new Error('Inventory not found')
+        res.status(400).json("Inventory Not found")
+        
     }
 
     const user = await User.findById(req.user.id)
 
     // Check for user
     if(!user) {
-        res.status(401)
-        throw new Error('User not found')
+        res.status(401).json("User not found")
+        
     }
 
     // make sure the login user matches the inventory user
     if(inventory.user.toString() !== user.id) {
-        res.status(401)
-        throw new Error('User not authorized')
+        res.status(401).json("User not Authorized")
+        
     }
 
-
-    const deletedInventory = await Inventory.findByIdAndRemove(req.params.id, req.body)
-    res.status(200).json(`Deleted ${inventory}`)
+    await inventory.remove();
+    // const deletedInventory = await Inventory.findByIdAndDelete(req.params.id)
+    res.status(200).json(inventory)
 })
 
 

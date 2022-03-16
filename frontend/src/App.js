@@ -5,9 +5,15 @@ import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Header from './components/Header';
+import ItemUpdateForm from './pages/ItemUpdateForm';
 
 
 function App() {
+
+  
+
+
+
   return (
     <>
       <Router>
@@ -15,12 +21,13 @@ function App() {
           <Header/>
           <Routes>
             <Route path='/' element={<Dashboard/>}/>
+            <Route path='/:pid' element={<ItemUpdateForm/>}/>
             <Route path='/login' element={<Login/>}/>
             <Route path='/register' element={<Register/>}/>
           </Routes>
         </div>
       </Router>
-      
+      {/* <ToastContainer/> */}
     </>
   );
 }

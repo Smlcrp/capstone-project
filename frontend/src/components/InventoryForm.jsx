@@ -1,15 +1,32 @@
 import {useState} from 'react';
-import {useSelector, useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {createInventory} from '../features/inventories/inventories.slice';
 
 function InventoryForm() {
+    
+    
+    const {user} = useSelector((state) => state.auth)
+    const id = user._id
+    console.log(id)
+    const [allValues, setAllValues] = useState({
+        name: '',
+        stock: '',
+        price: '',
+        id: id,
+     });
 
-    const [name, setName, stock, setStock, price, setPrice] = useState('')
+     const changeHandler = e => {
+        setAllValues({...allValues, [e.target.name]: e.target.value})
+     }
 
     const dispatch = useDispatch()
 
+
     const onSubmit = e => {
         e.preventDefault()
-        // dispatch(createInventory)
+        
+        dispatch(createInventory(allValues))
+        setAllValues()
     }
 
     return (
@@ -17,12 +34,16 @@ function InventoryForm() {
             <form onSubmit={onSubmit}>
                 <h1>Create A New Inventory Item</h1>
                 <div className="form-group">
+                    <label htmlFor="user">User:</label>
+                    <select value={user._id}>
+                        <option value={user}>{user.name}</option>
+                    </select>
                     <label htmlFor="name">Item Name:</label>
-                    <input type="text" name="name" id="name" value={name} onChange={(e) => setName(e.target.value)}/>
+                    <input type="text" className="form-control" id="name" name="name" placeholder="Enter a valid name" onChange={changeHandler}/>
                     <label htmlFor="stock">Item Stock:</label>
-                    <input type="text" name="stock" id="stock" value={stock} onChange={(e) => setStock(e.target.value)}/>
+                    <input type="number" min={0} className="form-control" id="stock" name="stock" placeholder="Enter a valid stock number" onChange={changeHandler}/>
                     <label htmlFor="price">Item Price:</label>
-                    <input type="text" name="price" id="price" value={price} onChange={(e) => setPrice(e.target.value)}/>
+                    <input type="number" min={0} className="form-control" id="price" name="price" placeholder="Enter a valid price" onChange={changeHandler}/>
                 </div>
                 <div className="form-group">
                     <button className='btn btn-block' type='submit'>
